@@ -2,7 +2,6 @@ package com.ai.ref;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +15,6 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.Annotation;
-import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
@@ -68,9 +66,6 @@ public class JavaFileFixer {
 	private static final String[] Component_RQM_LONG_NAME = "org.springframework.web.bind.annotation.RequestParam".split("\\.");
 	private static final String Component_RQM_SHORT_NAME = Component_RQM_LONG_NAME[Component_RQM_LONG_NAME.length-1];
 
-
-	private static List<TableInfos> ALL_TABLES = new ArrayList<TableInfos>();
-	
 	public static void main(String[] args) {
 		ASTParser astParser = ASTParser.newParser(AST.JLS8);
 		astParser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -96,9 +91,9 @@ public class JavaFileFixer {
 //					addDaoAnnontion(rewriter, cu);
 //					addActionRequestMapAnnontion(rewriter, cu);
 //					removeDataObject(rewriter, cu);
-//					storeDataObject(rewriter, cu);
+					storeDataObject(rewriter, cu);
 //					addServiceDaoAutoWire(rewriter, cu);
-					modifyParamtoSpringRequestParm(rewriter, cu);
+//					modifyParamtoSpringRequestParm(rewriter, cu);
 					TextEdit te = rewriter.rewriteAST(document,null);
 					te.apply(document);
 					if ( document.getModificationStamp() != stamp ){
@@ -202,7 +197,7 @@ public class JavaFileFixer {
 						}
 						
 						String s = 
-					    "<!-- <table tableName=\"%s\"  domainObjectName=\"%s.entity.%s\" mapperName=\"%s.dao.%sMapper\">\n";
+					    "<!-- <table tableName=\"%s\" schema=\""+schema+"\" domainObjectName=\"%s.entity.%s\" mapperName=\"%s.dao.%sDao\">\n";
 						if (idCoum!=null) {
 							s+="  <generatedKey column=\"%s\" sqlStatement=\"JDBC\" identity=\"true\" />\n";
 						}
